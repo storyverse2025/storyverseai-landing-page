@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STORYVERSE AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <div class="grain-overlay"></div>
+
+    <header class="site-header">
+        <a href="index.html" class="logo"><img src="logo.svg" alt="STORYVERSE" class="logo-img"></a>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+            <span></span><span></span>
+        </button>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="showcase.html">Showcase</a>
+            <a href="mailto:hello@storyverseai.art">Contact</a>
+        </nav>
+    </header>
+
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="meta-text" style="margin-bottom: 2rem;">[ Storyverse AI ]</div>
+            <h1 class="hero-heading">We are rebuilding Hollywood from studio to distribution.</h1>
+            <div class="hero-buttons">
+                <a href="mailto:hello@storyverseai.art" class="hero-btn">Contact</a>
+                <div class="hero-btn-wrap">
+                    <button class="hero-btn hero-btn--outline">Community</button>
+                    <div class="qr-popup">
+                        <img src="qrcode.webp" alt="WhatsApp Community QR Code">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D Card Gallery -->
+        <section class="spatial-stage">
+            <div class="gallery-track">
+                <div class="spatial-card card-1">
+                    <div class="card-content">
+                        <div class="card-meta">Commercials</div>
+                        <h3 class="card-title serif-text">Brand<br>Stories</h3>
+                    </div>
+                </div>
+                <div class="spatial-card card-2">
+                    <div class="card-content">
+                        <div class="card-meta">Microdrama</div>
+                        <h3 class="card-title serif-text">Short<br>Series</h3>
+                    </div>
+                </div>
+                <div class="spatial-card card-3">
+                    <div class="card-content">
+                        <div class="card-meta">Movies</div>
+                        <h3 class="card-title serif-text">Feature<br>Films</h3>
+                    </div>
+                </div>
+                <div class="spatial-card card-4">
+                    <div class="card-content">
+                        <div class="card-meta">Anime</div>
+                        <h3 class="card-title serif-text">Motion<br>Comic</h3>
+                    </div>
+                </div>
+                <div class="spatial-card card-5">
+                    <div class="card-content">
+                        <div class="card-meta">Animation</div>
+                        <h3 class="card-title serif-text">Full<br>Animation</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trusted By -->
+        <section class="trusted-section">
+            <div class="meta-text" style="margin-bottom: 2rem;">[ Trusted by employees in ]</div>
+            <div class="logo-row">
+                <svg viewBox="0 0 100 18" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" font-family="'Georgia', serif" font-size="16" font-weight="bold" fill="currentColor">NETFLIX</text></svg>
+                <svg viewBox="0 0 78 18" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" font-family="'Arial', sans-serif" font-size="16" font-weight="bold" fill="currentColor">DISNEY</text></svg>
+                <svg viewBox="0 0 60 18" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" font-family="'Georgia', serif" font-size="16" font-weight="bold" fill="currentColor">HBO</text></svg>
+                <svg viewBox="0 0 78 18" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" font-family="'Arial', sans-serif" font-size="16" font-weight="bold" fill="currentColor">SONY</text></svg>
+                <svg viewBox="0 0 130 18" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" font-family="'Georgia', serif" font-size="16" font-weight="bold" fill="currentColor">PARAMOUNT</text></svg>
+                <svg viewBox="0 0 100 18" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" font-family="'Arial', sans-serif" font-size="16" font-weight="bold" fill="currentColor">WARNER</text></svg>
+            </div>
+        </section>
+
+        <!-- Testimonial 1 -->
+        <section class="section-container" style="padding-bottom: 0px;">
+            <div class="testimonial-big">
+                <div class="meta-text" style="margin-bottom: 2rem;">[ What They Say ]</div>
+                <blockquote class="serif-text">
+                    Brief on Monday, cinematic trailer by Thursday. No traditional studio comes close.
+                </blockquote>
+                <div class="author-info">
+                    <span class="author-name">David Moreau</span>
+                    <span class="author-role">VP of Marketing, Luxe Collective</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team -->
+        <section class="team-section">
+            <div class="team-header">
+                <div>
+                    <div class="meta-text" style="margin-bottom: 1rem;">[ The People ]</div>
+                    <h2 class="serif-text">Meet the team.</h2>
+                </div>
+                <div class="meta-text" style="text-align: right;">
+                    CREW_01 — 06<br>
+                    FOUNDING TEAM
+                </div>
+            </div>
+
+            <div class="team-track-wrapper">
+                <div class="team-track">
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <img class="avatar-circle" src="avatars/1.png" alt="Jesse Z.">
+                            <div>
+                                <h3 class="serif-text">Jesse Z.</h3>
+                                <span class="team-role">CEO</span>
+                            </div>
+                        </div>
+                        <p class="team-bio">Leads company vision, strategy, and investments.</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <img class="avatar-circle" src="avatars/2.png" alt="Raymond K.">
+                            <div>
+                                <h3 class="serif-text">Raymond K.</h3>
+                                <span class="team-role">CSO</span>
+                            </div>
+                        </div>
+                        <p class="team-bio">Leads business development and partnerships.</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <img class="avatar-circle" src="avatars/3.png" alt="Amy L.">
+                            <div>
+                                <h3 class="serif-text">Amy L.</h3>
+                                <span class="team-role">Tech Lead</span>
+                            </div>
+                        </div>
+                        <p class="team-bio">Leads backend architecture and infrastructure.</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <img class="avatar-circle" src="avatars/4.png" alt="Chao W.">
+                            <div>
+                                <h3 class="serif-text">Chao W.</h3>
+                                <span class="team-role">Full Stack Engineer</span>
+                            </div>
+                        </div>
+                        <p class="team-bio">Leads platform engineering and deployment pipelines.</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <img class="avatar-circle" src="avatars/5.png" alt="Sid. L">
+                            <div>
+                                <h3 class="serif-text">Sid. L</h3>
+                                <span class="team-role">Product, UI</span>
+                            </div>
+                        </div>
+                        <p class="team-bio">Leads product design and user experience.</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <img class="avatar-circle" src="avatars/6.png" alt="Zoe Z.">
+                            <div>
+                                <h3 class="serif-text">Zoe Z.</h3>
+                                <span class="team-role">AI Engineer Advisor</span>
+                            </div>
+                        </div>
+                        <p class="team-bio">Advises on ML architecture and model optimization.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonial 2 -->
+        <section class="section-container" style="padding-top: 0;">
+            <div class="testimonial-big">
+                <blockquote class="serif-text">
+                    I forgot I was watching AI. That has never happened before.
+                </blockquote>
+                <div class="author-info">
+                    <span class="author-name">Rachel Tan</span>
+                    <span class="author-role">Head of Content, StreamVault</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marquee -->
+        <section class="marquee-wrapper">
+            <div class="meta-text" style="position: absolute; top: 40px; left: var(--padding-edge); z-index: 20;">[ Press ]</div>
+            <div class="marquee-content">
+                <div class="marquee-item">
+                    "The studio that makes Hollywood nervous" <span>— Wired</span>
+                    <div class="marquee-separator"></div>
+                    "AI filmmaking just crossed the uncanny valley" <span>— The Verge</span>
+                    <div class="marquee-separator"></div>
+                    "From script to screen in days, not months" <span>— Fast Company</span>
+                    <div class="marquee-separator"></div>
+                </div>
+                <div class="marquee-item">
+                    "The studio that makes Hollywood nervous" <span>— Wired</span>
+                    <div class="marquee-separator"></div>
+                    "AI filmmaking just crossed the uncanny valley" <span>— The Verge</span>
+                    <div class="marquee-separator"></div>
+                    "From script to screen in days, not months" <span>— Fast Company</span>
+                    <div class="marquee-separator"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="logo"><img src="logo.svg" alt="STORYVERSE" class="logo-img" style="opacity:0.5"></div>
+        <div class="meta-text">© 2026 STORYVERSE AI ALL RIGHTS RESERVED</div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const fragmentShader = `
+            uniform float u_time;
+            uniform vec2 u_resolution;
+
+            vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+            float snoise(vec2 v){
+                const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                         -0.577350269189626, 0.024390243902439);
+                vec2 i  = floor(v + dot(v, C.yy));
+                vec2 x0 = v -   i + dot(i, C.xx);
+                vec2 i1;
+                i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec4 x12 = x0.xyxy + C.xxzz;
+                x12.xy -= i1;
+                i = mod(i, 289.0);
+                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+                    + i.x + vec3(0.0, i1.x, 1.0 ));
+                vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+                    dot(x12.zw,x12.zw)), 0.0);
+                m = m*m;
+                m = m*m;
+                vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                vec3 h = abs(x) - 0.5;
+                vec3 ox = floor(x + 0.5);
+                vec3 a0 = x - ox;
+                m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                vec3 g;
+                g.x  = a0.x  * x0.x  + h.x  * x0.y;
+                g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                return 130.0 * dot(m, g);
+            }
+
+            void main() {
+                vec2 st = gl_FragCoord.xy / u_resolution.xy;
+                st.x *= u_resolution.x / u_resolution.y;
+
+                float t = u_time * 0.12;
+
+                float n1 = snoise(st * 1.2 + t);
+                float n2 = snoise(st * 2.5 - t * 0.8);
+                float n3 = snoise(st * 0.6 + t * 0.5);
+                float n = (n1 + n2 * 0.4 + n3 * 0.3) * 0.5 + 0.5;
+
+                float dist = distance(st, vec2(0.5 * (u_resolution.x / u_resolution.y), 0.5));
+                float vignette = smoothstep(1.4, 0.1, dist);
+
+                vec3 colorDeep    = vec3(0.04, 0.04, 0.08);
+                vec3 colorMid     = vec3(0.10, 0.12, 0.20);
+                vec3 colorAccent  = vec3(0.35, 0.42, 0.60);
+
+                vec3 baseColor = mix(colorDeep, colorMid, n * vignette * 1.8);
+
+                float glowMask = smoothstep(0.5, 1.0, n * vignette);
+                vec3 finalColor = mix(baseColor, colorAccent, glowMask * 0.55);
+
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        const vertexShader = `
+            void main() {
+                gl_Position = vec4(position, 1.0);
+            }
+        `;
+
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const uniforms = {
+            u_time: { value: 0.0 },
+            u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        };
+
+        const material = new THREE.ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            uniforms
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            uniforms.u_time.value += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+
+        // Drag to scroll for team track
+        const track = document.querySelector('.team-track');
+        let isDown = false, startX, scrollLeft;
+        track.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
+        track.addEventListener('mouseleave', () => { isDown = false; });
+        track.addEventListener('mouseup', () => { isDown = false; });
+        track.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX) * 1.5; });
+    </script>
+</body>
+</html>

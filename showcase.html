@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showcase — STORYVERSE AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-main: #FFFFFF;
+            --text-muted: #8A8A8A;
+            --text-meta: #555555;
+            --font-display: 'Playfair Display', serif;
+            --font-ui: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --grid-gap: 32px;
+            --padding-edge: 48px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .meta-text {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-meta);
+        }
+
+        /* Background */
+        #canvas-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.3;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* Header */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px var(--padding-edge);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .site-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            height: 150%;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, black 30%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 0%, black 30%, transparent 100%);
+            z-index: -1;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 14px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-muted);
+        }
+
+        /* Content */
+        .content-area {
+            position: relative;
+            z-index: 2;
+            padding: 160px var(--padding-edge) 60px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .header-row h1 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 400;
+        }
+
+        /* Category Grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--grid-gap);
+        }
+
+        .project-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .card-preview {
+            aspect-ratio: 16/10;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 40%, transparent 60%);
+        }
+
+        .card-count {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 2;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-info {
+            padding: 24px;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        /* Category Detail Panel */
+        .detail-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .detail-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .detail-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .detail-panel {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 80px var(--padding-edge) 60px;
+        }
+
+        .detail-panel::-webkit-scrollbar { width: 4px; }
+        .detail-panel::-webkit-scrollbar-track { background: transparent; }
+        .detail-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 60px;
+        }
+
+        .detail-header h2 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 400;
+        }
+
+        .close-btn {
+            width: 48px; height: 48px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.03);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .films-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 28px;
+        }
+
+        .film-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .film-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-4px);
+        }
+
+        .film-thumb {
+            aspect-ratio: 16/9;
+            width: 100%;
+            background: linear-gradient(135deg, #111 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .film-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, opacity 0.4s ease;
+        }
+
+        .film-thumb:hover img {
+            transform: scale(1.05);
+        }
+
+        .film-thumb-label {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.04);
+            position: absolute;
+        }
+
+        .film-play-btn {
+            position: absolute;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .film-play-btn svg {
+            width: 18px; height: 18px;
+            fill: white;
+            margin-left: 2px;
+        }
+
+        .film-thumb:hover .film-play-btn {
+            opacity: 1;
+        }
+
+        .film-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.65);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.7);
+            z-index: 2;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .video-modal.active { display: flex; }
+
+        .video-modal video {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .video-modal .close-btn {
+            position: absolute;
+            top: 32px;
+            right: 32px;
+        }
+
+        .film-info {
+            padding: 20px;
+        }
+
+        .film-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .film-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-weight: 300;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Footer */
+        .site-footer {
+            position: relative;
+            z-index: 2;
+            padding: 32px var(--padding-edge);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Back button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover { color: var(--text-main); }
+
+        .back-link svg {
+            width: 16px; height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+        }
+        /* Footer */
+        .site-footer {
+            padding: 60px var(--padding-edge);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Hamburger */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 101;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 20px;
+            height: 1.5px;
+            background: var(--text-main);
+        }
+
+        @media (max-width: 768px) {
+            :root { --padding-edge: 24px; }
+            .site-header { padding: 24px var(--padding-edge); }
+            .logo-img { height: 11px; }
+            .menu-toggle { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 0; right: 0;
+                width: 100%; height: 100vh;
+                background: rgba(0,0,0,0.95);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 32px;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                mix-blend-mode: normal;
+            }
+            .nav-links.open { opacity: 1; pointer-events: auto; }
+            .nav-links a { font-size: 1.2rem; }
+            .content-area { padding: 120px var(--padding-edge) 40px; }
+            .header-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .project-grid { grid-template-columns: 1fr; }
+            .films-grid { grid-template-columns: 1fr; }
+            .detail-panel { padding: 60px var(--padding-edge) 40px; }
+            .detail-header h2 { font-size: 2rem; }
+            .site-footer {
+                flex-direction: column;
+                gap: 16px;
+                padding: 40px var(--padding-edge);
+                text-align: center;
+            }
+            .site-footer .logo-img { height: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <div class="grain-overlay"></div>
+
+    <header class="site-header">
+        <a href="index.html" class="logo-link"><img src="logo.svg" alt="STORYVERSE" class="logo-img"></a>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+            <span></span><span></span>
+        </button>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="showcase.html" class="active">Showcase</a>
+            <a href="mailto:hello@storyverseai.art">Contact</a>
+        </nav>
+    </header>
+
+    <main class="content-area">
+        <div class="header-row">
+            <div>
+                <div class="meta-text" style="margin-bottom: 8px;">[ Index // Showcase ]</div>
+                <h1>Showcase.</h1>
+            </div>
+            <div class="meta-text" style="text-align: right;">
+                STORYVERSE.AI<br>
+                6 CATEGORIES
+            </div>
+        </div>
+
+        <div class="project-grid" id="categoryGrid"></div>
+    </main>
+
+    <!-- Detail Overlay -->
+    <div class="detail-overlay" id="detailOverlay">
+        <div class="detail-backdrop" id="detailBackdrop"></div>
+        <div class="detail-panel">
+            <div class="detail-header">
+                <div>
+                    <div class="meta-text" style="margin-bottom: 8px;" id="detailMeta"></div>
+                    <h2 id="detailTitle"></h2>
+                </div>
+                <button class="close-btn" id="closeBtn">&times;</button>
+            </div>
+            <div class="films-grid" id="filmsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <button class="close-btn" id="videoCloseBtn">&times;</button>
+        <video id="videoPlayer" controls playsinline></video>
+    </div>
+
+    <footer class="site-footer">
+        <div class="logo-link"><img src="logo.svg" alt="STORYVERSE" class="logo-img" style="opacity:0.5"></div>
+        <div class="meta-text">© 2026 STORYVERSE AI ALL RIGHTS RESERVED</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // === DATA ===
+        const T = 'thumbs/';
+        const V = 'https://video.squarespace-cdn.com/content/v1/68d97b33985b34722543c8d5/';
+        const categories = [
+            {
+                id: 'commercials',
+                title: 'Commercials',
+                desc: 'AI-generated brand commercials spanning fashion, tech, and luxury.',
+                image: T+'cat_commercials.jpg',
+                films: [
+                    { title: 'Patagonia', duration: '0:15', video: V+'cc66b50e-d475-4acd-a308-7091cf64a57d/playlist.m3u8', thumb: T+'patagonia.jpg' },
+                    { title: 'Rhode', duration: '0:18', video: V+'2ba93087-3151-4e06-995a-c57ca2d2491f/playlist.m3u8', thumb: T+'rhode.jpg' },
+                    { title: 'Glasses', duration: '0:12', video: V+'82b98714-59a4-4eee-9159-adfbb69407f3/playlist.m3u8', thumb: T+'glasses.jpg' },
+                    { title: 'Fashion Week', duration: '0:25', video: V+'9a36310d-eef3-46e4-a00a-9fe4d9304a7f/playlist.m3u8', thumb: T+'fashion_week.jpg' },
+                    { title: 'Cosmetic', duration: '0:20', video: V+'5726152a-b85e-4b5b-818d-c4caf75dec50/playlist.m3u8', thumb: T+'cosmetic.jpg' },
+                    { title: 'Lipstick', duration: '0:15', video: V+'e850acb0-cf06-4243-9261-5e7086ba03ec/playlist.m3u8' },
+                    { title: 'Mustang', duration: '0:15', video: V+'ece607a4-b31a-455e-935f-3735e9980c5b/playlist.m3u8', thumb: T+'mustang.jpg' },
+                    { title: 'Rolex', duration: '0:13', video: V+'85ce17d4-800c-4ae2-b293-9be518210b06/playlist.m3u8' },
+                    { title: 'Neurolink', duration: '0:19', video: V+'2aab8828-5e1d-473d-b02f-6b19b2369502/playlist.m3u8', thumb: T+'neurolink.jpg' },
+                    { title: 'AI Software', duration: '0:15', video: V+'96558fab-0830-49bd-b2b8-a1c8e69a4ca6/playlist.m3u8' },
+                    { title: 'Dior', duration: '0:15', video: V+'f3b531a7-f7d7-4c6e-86a4-498d1a863a98/playlist.m3u8' },
+                    { title: 'Shampoo', duration: '0:15', video: V+'e50ad517-7a43-4d08-a01e-2722329be080/playlist.m3u8' }
+                ]
+            },
+            {
+                id: 'microdrama',
+                title: 'Microdrama',
+                desc: 'Short-form dramatic series exploring ambition, power, and the human condition.',
+                image: T+'cat_microdrama.jpg',
+                films: [
+                    { title: 'When Pigs Fly', duration: '2:00', video: V+'05e96e1d-a617-4a89-822d-dab92c381881/playlist.m3u8', thumb: T+'when_pigs_fly.jpg', desc: 'A delusional but lovable Hollywood producer tries to "save cinema" after discovering he\'s been scammed by his own studio.' },
+                    { title: 'How I Tamed My Boss', duration: '0:08', video: V+'576273a2-8743-46ff-ba9f-3b8c3821239d/playlist.m3u8', thumb: T+'how_i_tamed.jpg', desc: 'A small-town girl from Oklahoma lands her dream internship at Silvergate Studios, only to find herself caught in a seductive nightmare of ambition and power.' },
+                    { title: 'Killer Love', duration: '0:12', video: V+'9edf6fcb-5e30-4ca3-a26f-db47defbe55d/playlist.m3u8' }
+                ]
+            },
+            {
+                id: 'movies',
+                title: 'Movies',
+                desc: 'Hollywood-quality AI-generated film trailers and short features.',
+                image: T+'cat_movies.jpg',
+                films: [
+                    { title: 'Echoes of the Deep', duration: '0:43', video: V+'0af0a7a3-4061-4eec-9204-acc1d196d991/playlist.m3u8', thumb: T+'echoes_deep.jpg' },
+                    { title: 'Saints & Sinners', duration: '0:15', video: V+'ef3adb18-a54a-432d-adcc-6f0d91c06361/playlist.m3u8', thumb: T+'saints_sinners.jpg' },
+                    { title: 'Departure', duration: '4:00', video: V+'090b732e-81a2-43ad-b686-08195444fe74/playlist.m3u8', thumb: T+'departure.jpg' },
+                    { title: 'Lucid Forest', duration: '0:12', video: V+'d29c25a4-ac43-452b-aafa-37386d2f8058/playlist.m3u8', thumb: T+'lucid_forest.jpg', desc: 'A shamanic experience in the Amazonian Forest.' },
+                    { title: 'The Last Sunset on Mars', duration: '1:25', video: V+'a501c99f-c7b5-4ee1-bb1f-347bb6912f1e/playlist.m3u8', thumb: T+'last_sunset.jpg' },
+                    { title: 'The Collector', duration: '0:12', video: V+'5ddc027e-6e25-48bc-9619-2503d3e4d3a8/playlist.m3u8', thumb: T+'collector.jpg' },
+                    { title: 'Black Code', duration: '0:12', video: V+'e732462b-1b54-4e96-98e7-3ccc0a267b98/playlist.m3u8', thumb: T+'black_code.jpg' },
+                    { title: 'The Ashes of the Empire', duration: '0:12', video: V+'34564ba3-c636-4b0d-9943-2f92e914e30a/playlist.m3u8' }
+                ]
+            },
+            {
+                id: 'anime',
+                title: 'Anime',
+                subtitle: 'Motion Comic',
+                desc: 'Motion comic and anime-style AI-generated narratives.',
+                image: T+'cat_anime.jpg',
+                films: [
+                    { title: '鋼の咆哮 Roar of Steel', duration: '0:30', video: V+'9f8bc261-c521-45b7-b8ab-e0692a7b797c/playlist.m3u8', thumb: T+'roar_of_steel.jpg' },
+                    { title: 'Black Lotus Romance', duration: '1:00', video: V+'9ceb0a55-1703-4e8c-b222-18fba5944d47/playlist.m3u8', thumb: T+'black_lotus.jpg' }
+                ]
+            },
+            {
+                id: 'animation',
+                title: 'Animation',
+                desc: 'Full animation productions powered by AI creative pipelines.',
+                image: T+'cat_animation.jpg',
+                films: [
+                    { title: 'When Pigs Fly', duration: '2:00', video: V+'05e96e1d-a617-4a89-822d-dab92c381881/playlist.m3u8', thumb: T+'when_pigs_fly.jpg', desc: 'Animated adaptation of the satirical Hollywood mini-series.' }
+                ]
+            },
+            {
+                id: 'explainer',
+                title: 'Explainer',
+                desc: 'AI-generated explainer and product videos for brands.',
+                image: T+'cat_explainer.jpg',
+                films: [
+                    { title: 'Therapist', duration: '0:15', video: V+'4d02de01-da99-43bf-8b1a-b0129b9be943/playlist.m3u8' },
+                    { title: 'Therapist II', duration: '0:25', video: V+'3466c8d2-ed1d-48d1-a19b-c102b8239c04/playlist.m3u8' },
+                    { title: 'Shampoo — Dior', duration: '0:15', video: V+'e50ad517-7a43-4d08-a01e-2722329be080/playlist.m3u8' }
+                ]
+            }
+        ];
+
+        // === RENDER CATEGORIES ===
+        const grid = document.getElementById('categoryGrid');
+        categories.forEach((cat, i) => {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+            card.onclick = () => openDetail(cat);
+            card.innerHTML = `
+                <div class="card-preview" style="background-image: url('${cat.image}')">
+                    <div class="card-count">
+                        <span class="meta-text" style="color: var(--text-main)">${cat.films.length} ${cat.films.length === 1 ? 'FILM' : 'FILMS'}</span>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3 class="card-title">${cat.title}</h3>
+                    <p class="card-desc">${cat.desc}</p>
+                    <div class="card-footer">
+                        <div class="meta-text" style="color: var(--text-muted)">CAT_${String(i + 1).padStart(2, '0')}</div>
+                        <div class="meta-text">EXPLORE →</div>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // === DETAIL PANEL ===
+        const overlay = document.getElementById('detailOverlay');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailMeta = document.getElementById('detailMeta');
+        const filmsGrid = document.getElementById('filmsGrid');
+
+        function openDetail(cat) {
+            detailTitle.textContent = cat.title + '.';
+            detailMeta.textContent = `[ ${cat.subtitle || cat.id.toUpperCase()} // ${cat.films.length} entries ]`;
+
+            filmsGrid.innerHTML = '';
+            cat.films.forEach((film, j) => {
+                const el = document.createElement('div');
+                el.className = 'film-card';
+                const thumbHtml = film.thumb
+                    ? `<img src="${film.thumb}" alt="${film.title}" loading="lazy">`
+                    : '';
+                el.innerHTML = `
+                    <div class="film-thumb" ${film.video ? `onclick="playVideo('${film.video}')"` : ''}>
+                        <span class="film-thumb-label">${String(j + 1).padStart(2, '0')}</span>
+                        ${thumbHtml}
+                        ${film.video ? `<div class="film-play-btn"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg></div>` : ''}
+                        <div class="film-duration">${film.duration}</div>
+                    </div>
+                    <div class="film-info">
+                        <h4 class="film-title">${film.title}</h4>
+                        ${film.desc ? `<p class="film-desc">${film.desc}</p>` : '<p class="film-desc" style="color: var(--text-meta)">AI-generated content by Storyverse AI.</p>'}
+                    </div>
+                `;
+                filmsGrid.appendChild(el);
+            });
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('closeBtn').onclick = closeDetail;
+        document.getElementById('detailBackdrop').onclick = closeDetail;
+
+        // === VIDEO PLAYER ===
+        const videoModal = document.getElementById('videoModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        let currentHls = null;
+
+        function playVideo(url) {
+            videoModal.classList.add('active');
+            if (currentHls) { currentHls.destroy(); currentHls = null; }
+
+            if (Hls.isSupported()) {
+                currentHls = new Hls();
+                currentHls.loadSource(url);
+                currentHls.attachMedia(videoPlayer);
+                currentHls.on(Hls.Events.MANIFEST_PARSED, () => videoPlayer.play());
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                videoPlayer.src = url;
+                videoPlayer.addEventListener('loadedmetadata', () => videoPlayer.play(), { once: true });
+            }
+        }
+
+        function closeVideo() {
+            videoModal.classList.remove('active');
+            videoPlayer.pause();
+            if (currentHls) { currentHls.destroy(); currentHls = null; }
+            videoPlayer.removeAttribute('src');
+            videoPlayer.load();
+        }
+
+        document.getElementById('videoCloseBtn').onclick = closeVideo;
+        videoModal.onclick = (e) => { if (e.target === videoModal) closeVideo(); };
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (videoModal.classList.contains('active')) closeVideo();
+                else closeDetail();
+            }
+        });
+
+        // === ANIMATED BACKGROUND ===
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const fragmentShader = `
+            uniform float u_time;
+            uniform vec2 u_resolution;
+
+            vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+            float snoise(vec2 v){
+                const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                         -0.577350269189626, 0.024390243902439);
+                vec2 i  = floor(v + dot(v, C.yy));
+                vec2 x0 = v -   i + dot(i, C.xx);
+                vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec4 x12 = x0.xyxy + C.xxzz;
+                x12.xy -= i1;
+                i = mod(i, 289.0);
+                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+                    + i.x + vec3(0.0, i1.x, 1.0 ));
+                vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+                    dot(x12.zw,x12.zw)), 0.0);
+                m = m*m;
+                m = m*m;
+                vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                vec3 h = abs(x) - 0.5;
+                vec3 ox = floor(x + 0.5);
+                vec3 a0 = x - ox;
+                m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                vec3 g;
+                g.x  = a0.x  * x0.x  + h.x  * x0.y;
+                g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                return 130.0 * dot(m, g);
+            }
+
+            void main() {
+                vec2 st = gl_FragCoord.xy / u_resolution.xy;
+                st.x *= u_resolution.x / u_resolution.y;
+                float t = u_time * 0.12;
+
+                float n1 = snoise(st * 1.2 + t);
+                float n2 = snoise(st * 2.5 - t * 0.8);
+                float n3 = snoise(st * 0.6 + t * 0.5);
+                float n = (n1 + n2 * 0.4 + n3 * 0.3) * 0.5 + 0.5;
+
+                float dist = distance(st, vec2(0.5 * (u_resolution.x / u_resolution.y), 0.5));
+                float vignette = smoothstep(1.4, 0.1, dist);
+
+                vec3 colorDeep   = vec3(0.04, 0.04, 0.08);
+                vec3 colorMid    = vec3(0.10, 0.12, 0.20);
+                vec3 colorAccent = vec3(0.35, 0.42, 0.60);
+
+                vec3 baseColor = mix(colorDeep, colorMid, n * vignette * 1.8);
+                float glowMask = smoothstep(0.5, 1.0, n * vignette);
+                vec3 finalColor = mix(baseColor, colorAccent, glowMask * 0.55);
+
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        const vertexShader = `void main() { gl_Position = vec4(position, 1.0); }`;
+
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const uniforms = {
+            u_time: { value: 0.0 },
+            u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        };
+        const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
+        scene.add(new THREE.Mesh(geometry, material));
+
+        function animate() {
+            requestAnimationFrame(animate);
+            uniforms.u_time.value += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
