@@ -288,14 +288,19 @@
                 float dist = distance(st, vec2(0.5 * (u_resolution.x / u_resolution.y), 0.5));
                 float vignette = smoothstep(1.4, 0.1, dist);
 
-                vec3 colorDeep    = vec3(0.04, 0.04, 0.08);
-                vec3 colorMid     = vec3(0.10, 0.12, 0.20);
-                vec3 colorAccent  = vec3(0.35, 0.42, 0.60);
+                vec3 colorDeep = vec3(0.05, 0.05, 0.05);
+                vec3 colorMid  = vec3(0.08, 0.08, 0.08);
+
+                float hue = fract(n * 0.5 + t * 0.15 + st.x * 0.3 + st.y * 0.2);
+                float s = 0.7;
+                float v = 1.0;
+                vec3 c = clamp(abs(mod(hue * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+                vec3 rainbow = v * mix(vec3(1.0), c, s);
 
                 vec3 baseColor = mix(colorDeep, colorMid, n * vignette * 1.8);
 
                 float glowMask = smoothstep(0.5, 1.0, n * vignette);
-                vec3 finalColor = mix(baseColor, colorAccent, glowMask * 0.55);
+                vec3 finalColor = mix(baseColor, rainbow, glowMask * 0.35);
 
                 gl_FragColor = vec4(finalColor, 1.0);
             }
