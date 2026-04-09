@@ -4,8 +4,8 @@
     --text-muted: #8A8A8A;
     --text-meta: #555555;
 
-    --font-display: 'Playfair Display', serif;
-    --font-ui: 'Inter', sans-serif;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-ui: 'Outfit', sans-serif;
     --font-mono: 'Space Mono', monospace;
 
     --grid-gap: 24px;
@@ -111,12 +111,23 @@ main {
 }
 
 .hero-heading {
-    font-size: clamp(2.4rem, 5vw, 4rem);
-    line-height: 1.15;
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1.0;
     margin-bottom: 40px;
     letter-spacing: -0.02em;
     max-width: 720px;
     margin-inline: auto;
+    font-weight: 600;
+}
+
+.hero-heading .hw-light {
+    font-weight: 300;
+    color: rgba(255,255,255,0.35);
+}
+
+.hero-heading em {
+    font-style: italic;
+    font-weight: 300;
 }
 
 .hero-buttons {
@@ -127,16 +138,22 @@ main {
 }
 
 .hero-btn {
-    padding: 12px 32px;
+    padding: 0 32px;
+    height: 44px;
+    line-height: 44px;
     min-width: 160px;
     text-align: center;
     font-family: var(--font-ui);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
     background: var(--text-main);
     color: var(--bg-color);
     border: 1px solid var(--text-main);
