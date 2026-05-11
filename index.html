@@ -22,7 +22,7 @@
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="showcase.html">Showcase</a>
-            <a href="mailto:hello@storyverseai.art">Contact</a>
+            <a href="#contact">Contact</a>
         </nav>
     </header>
 
@@ -33,7 +33,7 @@
             <div class="meta-text" style="margin-bottom: 2rem;">[ Storyverse AI ]</div>
             <h1 class="hero-heading"><span class="hw-light">We are</span> rebuilding<br><em>Hollywood</em> <span class="hw-light">from</span> studio<br><span class="hw-light">to</span> distribution.</h1>
             <div class="hero-buttons">
-                <a href="mailto:hello@storyverseai.art" class="hero-btn">Contact</a>
+                <a href="#contact" class="hero-btn">Contact</a>
                 <div class="hero-btn-wrap">
                     <button class="hero-btn hero-btn--outline">Community</button>
                     <div class="qr-popup">
@@ -140,6 +140,36 @@
                     <span class="author-role">Head of Content, StreamVault</span>
                 </div>
             </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="contact-section" id="contact" aria-labelledby="contact-title">
+            <div class="contact-copy">
+                <div class="meta-text">[ Contact ]</div>
+                <h2 class="contact-title serif-text" id="contact-title">Tell us what you want to make.</h2>
+                <p class="contact-description">Share the company, the story, and the screen you are aiming for. We will get back to you directly.</p>
+                <div class="contact-email-block">
+                    <span class="meta-text">Company email</span>
+                    <span class="contact-email">hello@storyverseai.art</span>
+                </div>
+            </div>
+            <form class="contact-form" action="https://formsubmit.co/hello@storyverseai.art" method="POST">
+                <input type="hidden" name="_subject" value="New StoryVerse AI website inquiry">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="text" name="_honey" class="form-honeypot" tabindex="-1" autocomplete="off">
+
+                <label for="company-name">Company name</label>
+                <input id="company-name" name="company_name" type="text" placeholder="Studio / Brand / Company" required>
+
+                <label for="contact-email">Email</label>
+                <input id="contact-email" name="email" type="email" placeholder="you@company.com" required>
+
+                <label for="contact-message">Message</label>
+                <textarea id="contact-message" name="message" rows="6" placeholder="Tell us about the project, timeline, format, or anything weirdly ambitious." required></textarea>
+
+                <button class="hero-btn contact-submit" type="submit">Send Message</button>
+            </form>
         </section>
     </main>
 
@@ -258,11 +288,13 @@
 
         // Drag to scroll for team track
         const track = document.querySelector('.team-track');
-        let isDown = false, startX, scrollLeft;
-        track.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
-        track.addEventListener('mouseleave', () => { isDown = false; });
-        track.addEventListener('mouseup', () => { isDown = false; });
-        track.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX) * 1.5; });
+        if (track) {
+            let isDown = false, startX, scrollLeft;
+            track.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
+            track.addEventListener('mouseleave', () => { isDown = false; });
+            track.addEventListener('mouseup', () => { isDown = false; });
+            track.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX) * 1.5; });
+        }
     </script>
 </body>
 </html>
