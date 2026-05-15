@@ -533,6 +533,7 @@
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="showcase.html" class="active">Showcase</a>
+            <a href="press-release.html">Press</a>
             <a href="index.html#contact">Contact</a>
         </nav>
     </header>
@@ -545,7 +546,7 @@
             </div>
             <div class="meta-text" style="text-align: right;">
                 STORYVERSE.AI<br>
-                5 CATEGORIES
+                4 CATEGORIES
             </div>
         </div>
 
@@ -573,9 +574,18 @@
         <video id="videoPlayer" controls playsinline></video>
     </div>
 
-    <footer class="site-footer">
-        <div class="logo-link"><img src="logo.svg" alt="STORYVERSE" class="logo-img" style="opacity:0.5"></div>
-        <div class="meta-text">© 2026 STORYVERSE AI ALL RIGHTS RESERVED</div>
+    <footer class="site-footer site-footer--expanded">
+        <div>
+            <div class="footer-brand">STORYVERSE</div>
+            <div class="footer-tagline">AI-native cinematic studio</div>
+            <div class="footer-locations">Los Angeles, San Francisco, Berlin, Rome, Singapore, Beijing</div>
+            <div class="footer-email">hello@storyverseai.art</div>
+        </div>
+        <div class="footer-links">
+            <a href="https://www.linkedin.com/company/storyverse-inc/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://x.com/Storyverseart" target="_blank" rel="noopener">X</a>
+            <span>© 2026 STORYVERSE Inc. All rights reserved.</span>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -597,9 +607,9 @@
                 ]
             },
             {
-                id: 'movies',
-                title: 'Movies',
-                desc: 'Hollywood-quality AI-generated film trailers and short features.',
+                id: 'feature-film',
+                title: 'Feature Film',
+                desc: 'Hollywood-quality AI-native and hybrid films, trailers, proof-of-concepts, and franchise pilots.',
                 image: T+'cat_movies.jpg',
                 films: [
                     { title: 'Echoes of the Deep', duration: '0:43', video: V+'movies/01-echoes-of-the-deep.mp4', thumb: T+'echoes_deep.jpg' },
@@ -613,29 +623,20 @@
                 ]
             },
             {
-                id: 'anime',
-                title: 'Anime',
-                subtitle: 'Motion Comic',
-                desc: 'Motion comic and anime-style AI-generated narratives.',
+                id: 'animation',
+                title: 'Animation',
+                desc: 'Animation and comic-to-screen productions for stylized worlds, scalable IP, and cross-platform universes.',
                 image: T+'cat_anime.jpg',
                 films: [
                     { title: '鋼の咆哮 Roar of Steel', duration: '0:30', video: V+'anime/01-roar-of-steel.mp4', thumb: T+'roar_of_steel.jpg' },
-                    { title: 'Black Lotus Romance', duration: '1:00', video: V+'anime/02-black-lotus-romance.mp4', thumb: T+'black_lotus.jpg' }
-                ]
-            },
-            {
-                id: 'animation',
-                title: 'Animation',
-                desc: 'Full animation productions powered by AI creative pipelines.',
-                image: T+'cat_animation.jpg',
-                films: [
+                    { title: 'Black Lotus Romance', duration: '1:00', video: V+'anime/02-black-lotus-romance.mp4', thumb: T+'black_lotus.jpg' },
                     { title: 'When Pigs Fly', duration: '2:00', video: V+'animation/01-when-pigs-fly.mp4', thumb: T+'when_pigs_fly.jpg', desc: 'Animated adaptation of the satirical Hollywood mini-series.' }
                 ]
             },
             {
-                id: 'commercials',
-                title: 'Commercials',
-                desc: 'AI-generated brand commercials, explainers, and product videos.',
+                id: 'branded-content',
+                title: 'Branded Content',
+                desc: 'Cinematic branded stories, game marketing, product films, trailers, and campaign content built for speed, scale, and taste.',
                 image: T+'cat_commercials.jpg',
                 films: [
                     { title: 'Patagonia', duration: '0:15', video: V+'commercials/01-patagonia.mp4', thumb: T+'patagonia.jpg' },
@@ -707,7 +708,7 @@
                     </div>
                     <div class="film-info">
                         <h4 class="film-title">${film.title}</h4>
-                        ${film.desc ? `<p class="film-desc">${film.desc}</p>` : '<p class="film-desc" style="color: var(--text-meta)">AI-generated content by Storyverse AI.</p>'}
+                        ${film.desc ? `<p class="film-desc">${film.desc}</p>` : '<p class="film-desc" style="color: var(--text-meta)">AI-generated content by STORYVERSE AI.</p>'}
                     </div>
                 `;
                 filmsGrid.appendChild(el);
