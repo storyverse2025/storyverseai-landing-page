@@ -663,7 +663,11 @@
         categories.forEach((cat, i) => {
             const card = document.createElement('div');
             card.className = 'project-card';
-            card.onclick = () => openDetail(cat);
+            card.id = cat.id;
+            card.onclick = () => {
+                openDetail(cat);
+                history.replaceState(null, '', `#${cat.id}`);
+            };
             card.innerHTML = `
                 <div class="card-preview" style="background-image: url('${cat.image}')">
                     <div class="card-count">
@@ -725,6 +729,19 @@
 
         document.getElementById('closeBtn').onclick = closeDetail;
         document.getElementById('detailBackdrop').onclick = closeDetail;
+
+        function openCategoryFromHash() {
+            const categoryId = window.location.hash.replace('#', '');
+            if (!categoryId) return;
+
+            const category = categories.find(cat => cat.id === categoryId);
+            if (!category) return;
+
+            openDetail(category);
+        }
+
+        openCategoryFromHash();
+        window.addEventListener('hashchange', openCategoryFromHash);
 
         // === VIDEO PLAYER ===
         const videoModal = document.getElementById('videoModal');
