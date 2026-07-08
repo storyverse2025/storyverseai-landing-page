@@ -47,3 +47,20 @@ def test_showcase_category_cards_are_tracked_by_project_card_id():
     assert "var id = el.getAttribute('id');" in ANALYTICS
     for category_id in ["microdrama", "feature-film", "animation", "branded-content"]:
         assert f"id: '{category_id}'" in SHOWCASE
+
+
+def test_analytics_is_idempotent_and_binds_each_event_once():
+    assert "window.__storyverseAnalyticsLoaded" in ANALYTICS
+    assert "function bindOnce(el, key, eventName, handler)" in ANALYTICS
+    for key in ["generate-lead", "community-qr-view", "showcase-click", "cta-click"]:
+        assert f"bindOnce" in ANALYTICS
+        assert f"'{key}'" in ANALYTICS
+
+
+def test_no_duplicate_custom_event_emitters_outside_analytics_module():
+    for html in [INDEX, SHOWCASE, PRESS]:
+        assert "gtag('event'" not in html
+        assert 'gtag("event"' not in html
+
+    # One central GA4 dispatch path only; event-specific code must call track().
+    assert ANALYTICS.count("gtag('event'") == 1
