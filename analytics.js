@@ -13,8 +13,12 @@
  * custom event so each event can be sliced by traffic source in GA4.
  */
 (function () {
+  if (window.__storyverseAnalyticsLoaded) return;
+  window.__storyverseAnalyticsLoaded = true;
+
   var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
   var STORE_KEY = 'sv_utm';
+  var BOUND_ATTR = 'data-sv-analytics-bound';
 
   function readUtmFromUrl() {
     var params = new URLSearchParams(window.location.search);
@@ -93,33 +97,40 @@
     return text || 'cta';
   }
 
+  function bindOnce(el, key, eventName, handler) {
+    var attr = BOUND_ATTR + '-' + key;
+    if (el.hasAttribute(attr)) return;
+    el.setAttribute(attr, 'true');
+    el.addEventListener(eventName, handler);
+  }
+
   window.svTrack = track;
 
   document.addEventListener('DOMContentLoaded', function () {
     // Contact form submit -> generate_lead (primary conversion candidate)
     document.querySelectorAll('.contact-form').forEach(function (form) {
-      form.addEventListener('submit', function () {
+      bindOnce(form, 'generate-lead', 'submit', function () {
         track('generate_lead', { form_name: form.getAttribute('data-form-name') || 'contact' });
       });
     });
 
     // Community button reveals the community QR -> community_qr_view
     document.querySelectorAll('[data-track-community-qr], .hero-btn-wrap > button').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      bindOnce(btn, 'community-qr-view', 'click', function () {
         track('community_qr_view', {});
       });
     });
 
     // Showcase/category cards -> showcase_click (with category)
     document.querySelectorAll('.spatial-card, .project-card, [data-track-showcase-click]').forEach(function (card) {
-      card.addEventListener('click', function () {
+      bindOnce(card, 'showcase-click', 'click', function () {
         track('showcase_click', { showcase_category: getShowcaseCategory(card) });
       });
     });
 
     // CTA clicks -> cta_click (with label). Intentionally narrow to Work With Us / Press CTAs.
     document.querySelectorAll('a.hero-btn[href="#contact"], a.hero-btn[href="index.html#contact"], a.hero-btn[href="press-release.html"], .marquee-cta a, [data-track-cta]').forEach(function (el) {
-      el.addEventListener('click', function () {
+      bindOnce(el, 'cta-click', 'click', function () {
         track('cta_click', { cta_label: getCtaLabel(el) });
       });
     });
