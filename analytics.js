@@ -1,6 +1,12 @@
 /**
- * STORYVERSE AI — GA4 event + UTM source tracking.
+ * STORYVERSE AI — GA4 custom events + UTM source tracking.
  * Shared across all static pages. Depends on gtag() being defined in the page <head>.
+ *
+ * Event map:
+ * - generate_lead: contact form submit; params: form_name + UTM
+ * - community_qr_view: Community QR reveal; params: UTM
+ * - showcase_click: Showcase/category card click; params: showcase_category + UTM
+ * - cta_click: Work With Us / Press CTA click; params: cta_label + UTM
  *
  * UTM handling: capture utm_* on landing, persist to sessionStorage so the source
  * survives navigation across the multi-page static site, and attach it to every
@@ -35,53 +41,86 @@
 
   var utm = getUtm();
 
+  function merge(target, source) {
+    if (!source) return target;
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key) && source[key] !== undefined && source[key] !== null && source[key] !== '') {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
+
   function track(name, params) {
-    var payload = {};
-    for (var k in utm) { if (utm.hasOwnProperty(k)) payload[k] = utm[k]; }
-    if (params) { for (var p in params) { if (params.hasOwnProperty(p)) payload[p] = params[p]; } }
+    var payload = merge({}, utm);
+    merge(payload, params);
     if (typeof window.gtag === 'function') {
       window.gtag('event', name, payload);
     }
   }
+
+  function normalizeLabel(value) {
+    return (value || '')
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+  }
+
+  function getShowcaseCategory(el) {
+    var explicit = el.getAttribute('data-showcase-category');
+    if (explicit) return explicit;
+
+    var href = el.getAttribute('href') || '';
+    if (href.indexOf('#') > -1) return href.split('#').pop();
+
+    var id = el.getAttribute('id');
+    if (id) return id;
+
+    var title = el.querySelector && el.querySelector('.card-title');
+    return title ? normalizeLabel(title.textContent) : normalizeLabel(el.getAttribute('aria-label'));
+  }
+
+  function getCtaLabel(el) {
+    var explicit = el.getAttribute('data-cta-label');
+    if (explicit) return explicit;
+
+    var text = normalizeLabel(el.textContent || el.getAttribute('aria-label'));
+    if (text.indexOf('work_with_us') > -1) return 'work_with_us';
+    if (text.indexOf('press') > -1) return 'press_cta';
+    return text || 'cta';
+  }
+
   window.svTrack = track;
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Contact form submit -> generate_lead (primary conversion)
-    var form = document.querySelector('.contact-form');
-    if (form) {
+    // Contact form submit -> generate_lead (primary conversion candidate)
+    document.querySelectorAll('.contact-form').forEach(function (form) {
       form.addEventListener('submit', function () {
-        track('generate_lead', { form_name: 'contact' });
-      });
-    }
-
-    // Community button reveals the community QR -> community_qr_view
-    var communityBtn = document.querySelector('.hero-btn-wrap .hero-btn');
-    if (communityBtn) {
-      communityBtn.addEventListener('click', function () {
-        track('community_qr_view', {});
-      });
-    }
-
-    // Showcase spatial cards -> showcase_click (with category)
-    document.querySelectorAll('.spatial-card').forEach(function (card) {
-      card.addEventListener('click', function () {
-        var href = card.getAttribute('href') || '';
-        var category = href.indexOf('#') > -1 ? href.split('#')[1] : (card.getAttribute('aria-label') || '');
-        track('showcase_click', { showcase_category: category });
+        track('generate_lead', { form_name: form.getAttribute('data-form-name') || 'contact' });
       });
     });
 
-    // CTA clicks -> cta_click (with label)
-    var ctas = [
-      { sel: 'a.hero-btn[href="#contact"]', label: 'work_with_us' },
-      { sel: 'a.hero-btn[href="press-release.html"]', label: 'press_release' },
-      { sel: '.marquee-cta a', label: 'read_press_release' }
-    ];
-    ctas.forEach(function (c) {
-      document.querySelectorAll(c.sel).forEach(function (el) {
-        el.addEventListener('click', function () {
-          track('cta_click', { cta_label: c.label });
-        });
+    // Community button reveals the community QR -> community_qr_view
+    document.querySelectorAll('[data-track-community-qr], .hero-btn-wrap > button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        track('community_qr_view', {});
+      });
+    });
+
+    // Showcase/category cards -> showcase_click (with category)
+    document.querySelectorAll('.spatial-card, .project-card, [data-track-showcase-click]').forEach(function (card) {
+      card.addEventListener('click', function () {
+        track('showcase_click', { showcase_category: getShowcaseCategory(card) });
+      });
+    });
+
+    // CTA clicks -> cta_click (with label). Intentionally narrow to Work With Us / Press CTAs.
+    document.querySelectorAll('a.hero-btn[href="#contact"], a.hero-btn[href="index.html#contact"], a.hero-btn[href="press-release.html"], .marquee-cta a, [data-track-cta]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        track('cta_click', { cta_label: getCtaLabel(el) });
       });
     });
   });
