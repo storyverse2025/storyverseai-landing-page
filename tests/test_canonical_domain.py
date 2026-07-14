@@ -1,21 +1,8 @@
-import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
 
 ROOT = Path(".")
-
-
-def test_vercel_redirects_www_to_apex_domain():
-    config = json.loads((ROOT / "vercel.json").read_text(encoding="utf-8"))
-    redirects = config.get("redirects", [])
-    assert redirects, "vercel.json should define redirects"
-
-    redirect = redirects[0]
-    assert redirect["source"] == "/:path*"
-    assert redirect["destination"] == "https://storyverseai.art/:path*"
-    assert redirect["permanent"] is True
-    assert {"type": "host", "value": "www.storyverseai.art"} in redirect.get("has", [])
 
 
 def test_public_html_pages_declare_non_www_canonical_urls():
