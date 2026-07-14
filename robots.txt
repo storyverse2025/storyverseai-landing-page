@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.storyverseai.art/sitemap.xml
+Sitemap: https://storyverseai.art/sitemap.xml
